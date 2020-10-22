@@ -155,6 +155,18 @@ function initialize(printfile::String, summfile::String,
     return prob
 end
 
+# make larger workspace
+function initialize(printfile::String, summfile::String,ws::Tuple)
+    prob = snoptWorkspace(ws[1],ws[2])
+
+    ccall((:f_sninitx, libsnopt7), Cvoid,
+          (Ptr{UInt8}, Cint, Ptr{UInt8}, Cint,
+           Ptr{Cint}, Cint, Ptr{Cdouble}, Cint),
+          printfile, length(printfile), summfile, length(summfile),
+          prob.iw, prob.leniw, prob.rw, prob.lenrw)
+    return prob
+end
+
 function readOptions(prob::snoptWorkspace, specsfile::String)
     status = [0]
     ccall((:f_snspecf, libsnopt7), Cvoid,

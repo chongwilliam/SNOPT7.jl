@@ -1,13 +1,20 @@
 # SNOPT7.jl
 Julia interface for SNOPT7
 
-Still needs work, but currently works with:
-- Julia 1.4.2
-- JuMP 0.21.2
-- MathOptInterface 0.9.14
+modified to have increased workspace size
 
-- SNOPT 7.7 (including [trial libraries](http://ccom.ucsd.edu/~optimizers))
+# Linux install
 
-There are two examples, one using JuMP/MOI and the other using the "SNOPT"-like interface.
+copy "libsnopt7.so" to /usr/lib
 
-If you're using the trial libraries, set `DL_LOAD_PATH` (macOS) or `LD_LIBRARY_PATH` (linux) to the location of the libraries.
+copy "snopt7.lic" to /home/licenses
+
+add to /.bashrc
+
+export SNOPT_HOME="$HOME/usr/lib"
+
+export SNOPT_LICENSE="$HOME/licenses/snopt7.lic"
+
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${SNOPT_HOME}
+
+export PATH="${SNOPT_HOME}:$PATH"

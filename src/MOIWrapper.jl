@@ -169,7 +169,8 @@ function MOI.set(model::Optimizer, ::MOI.NLPBlock, nonlin::MOI.NLPBlockData)
 end
 
 # Solve
-function MOI.optimize!(model::Optimizer)
+function MOI.optimize!(model::Optimizer;
+        ws::Tuple=(),outfile::String="snopt.out")
 
     n     = length(model.variables)
     nncon = model.nonlin !== nothing ? length(model.nonlin.constraint_bounds) : 0
@@ -308,7 +309,15 @@ function MOI.optimize!(model::Optimizer)
         iobj = 0
         hs   = zeros(Int,n+m)
 
-        model.workspace = SNOPT7.initialize("snopt.out","screen")
+
+        # make larger workspace
+        if ws == ()
+            # set workspace size (10x recommended by manual)
+            ws = (1000*(n+m),2000*(n+m))
+        end
+        model.workspace = SNOPT7.initialize(outfile,"screen",ws)
+
+        # model.workspace = SNOPT7.initialize("snopt.out","screen")
 
         for (name,value) in model.options
             # Replace underscore with space
